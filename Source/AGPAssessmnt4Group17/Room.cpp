@@ -11,7 +11,10 @@ FRoom::FRoom(FVector2D Position, TArray<AGridMeshSegment*> MeshSegments)
 
 FVector2D FRoom::GetClosestMeshSegmentPosition(FVector2D OtherPosition)
 {
-	FVector2D ClosestPos = MeshSegments[0]->Position;
+	FVector2D ClosestPos;
+
+	if(MeshSegments.Num() > 0)
+		ClosestPos = MeshSegments[0]->Position;
 
 	for(int I = 1; I < MeshSegments.Num(); I++)
 	{

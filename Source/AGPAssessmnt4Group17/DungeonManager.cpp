@@ -8,12 +8,15 @@
 #include "MinimumSpanningTree.h"
 #include "Pathfinding.h"
 #include "Engine/StaticMeshActor.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ADungeonManager::ADungeonManager()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	bReplicates = true;
+	bAlwaysRelevant = true;
 
 	///Set default values
 	PerlinThreshold = 0.6f;
@@ -31,6 +34,10 @@ ADungeonManager::ADungeonManager()
 	
 	MaxRoomDepth = 6;
 	MinRoomDepth = 3;
+
+	PerlinOffset = TNumericLimits<float>::Max();
+
+	GenerateRandomValues();
 }
 
 // Called when the game starts or when spawned
@@ -38,7 +45,7 @@ void ADungeonManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GenerateDungeon();
+	CreateDungeon();
 }
 
 // Called every frame
@@ -50,7 +57,7 @@ void ADungeonManager::Tick(float DeltaTime)
 	{
 		bRegenerateDungeon = false;
 
-		GenerateDungeon();
+		CreateDungeon();
 	}
 
 	if(bClearDungeon)
@@ -65,7 +72,6 @@ void ADungeonManager::Tick(float DeltaTime)
 //Generates the dungeon
 void ADungeonManager::GenerateDungeon()
 {
-	ClearDungeon();
 	Grid = FGrid(GetWorld(), DungeonWidth, DungeonDepth, GridSize);
 	GenerateRooms();
 	
@@ -86,23 +92,27 @@ void ADungeonManager::ClearDungeon()
 	Grid.ClearAllMeshSegments();
 }
 
+void ADungeonManager::CreateDungeon()
+{
+	ClearDungeon();
+
+	GenerateDungeon();
+}
+
 //use perlin noise to randomly place rooms
 void ADungeonManager::GenerateRooms()
 {
-	float PerlinOffset = FMath::RandRange(-10000.0f, 10000.0f);
 
-	for(int i = 0; i < DungeonWidth; i++)
+	for(int32 I = 0; I < DungeonWidth; I++)
 	{
-		for(int j = 0; j < DungeonDepth; j++)
+		for(int32 J = 0; J < DungeonDepth; J++)
 		{
-			float PerlinValue = FMath::PerlinNoise2D(FVector2D(i * PerlinRoughness + PerlinOffset, j * PerlinThreshold + PerlinOffset));
+			float PerlinValue = FMath::PerlinNoise2D(FVector2D(I * PerlinRoughness + PerlinOffset, J * PerlinThreshold + PerlinOffset));
 
 			//only create a room if the value returned by the perlin noise function exceed a set value
 			if(PerlinValue >= PerlinThreshold)
 			{
-				int32 RoomWidth = FMath::RandRange(MinRoomWidth, MaxRoomWidth);
-				int32 RoomDepth = FMath::RandRange(MinRoomDepth, MaxRoomDepth);
-				Grid.AddRoom(FVector2D(i, j), RoomWidth, RoomDepth);
+				Grid.AddRoom(FVector2D(I, J), RoomWidths[J * DungeonWidth + I], RoomDepths[J * DungeonWidth + I]);
 			}
 		}
 	}
@@ -205,6 +215,37 @@ TArray<FVector2D> ADungeonManager::FindConnectedVertices(FVector2D Vertex, TArra
 	}
 
 	return ConnectedVertices;
+}
+
+void ADungeonManager::GenerateRandomValues()
+{
+	if(PerlinOffset == TNumericLimits<float>::Max())
+	{
+		PerlinOffset = FMath::RandRange(-10000.0f, 10000.0f);
+
+		RoomWidths = TArray<int32>();
+		RoomWidths.SetNum((DungeonDepth - 1) * DungeonWidth + DungeonWidth);
+		RoomDepths = TArray<int32>();
+		RoomDepths.SetNum((DungeonDepth - 1) * DungeonWidth + DungeonWidth);
+
+		for(int32 I = 0; I < RoomWidths.Num(); I++)
+		{
+			RoomWidths[I] = FMath::RandRange(MinRoomWidth, MaxRoomWidth);
+		}
+
+		for(int32 I = 0; I < RoomDepths.Num(); I++)
+		{
+			RoomDepths[I] = FMath::RandRange(MinRoomDepth, MaxRoomDepth);
+		}
+	}
+}
+
+void ADungeonManager::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ADungeonManager, PerlinOffset);
+	DOREPLIFETIME(ADungeonManager, RoomWidths);
+	DOREPLIFETIME(ADungeonManager, RoomDepths);
 }
 
 void ADungeonManager::DebugTree(TArray<FMyEdge> Tree)

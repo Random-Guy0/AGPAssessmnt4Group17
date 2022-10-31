@@ -60,7 +60,9 @@ public:
 	int32 MaxRoomDepth;
 	
 	TArray<AHallwaySegment*> HallwaySegments;
-
+	
+	void CreateDungeon();
+	
 	void GenerateRooms();
 	void ClearDungeon();
 
@@ -90,7 +92,17 @@ public:
 	virtual bool ShouldTickIfViewportsOnly() const override;
 
 private:
+	UPROPERTY(Replicated)
+	float PerlinOffset;
 
+	UPROPERTY(Replicated)
+	TArray<int32> RoomWidths;
+	UPROPERTY(Replicated)
+	TArray<int32> RoomDepths;
+	
 	TArray<FVector2D> FindConnectedVertices(FVector2D Vertex, TArray<FMyEdge> Edges);
 	
+	void GenerateRandomValues();
+
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };
