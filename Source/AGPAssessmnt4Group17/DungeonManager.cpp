@@ -13,8 +13,6 @@
 // Sets default values
 ADungeonManager::ADungeonManager()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
 	bAlwaysRelevant = true;
 
@@ -28,24 +26,24 @@ ADungeonManager::ADungeonManager()
 	GridSize = 400.0f;
 
 	RoomHeight = 500.0f;
-	
+
 	MaxRoomWidth = 6;
 	MinRoomWidth = 2;
-	
+
 	MaxRoomDepth = 6;
 	MinRoomDepth = 3;
 
-	PerlinOffset = TNumericLimits<float>::Max();
-
 	GenerateRandomValues();
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 // Called when the game starts or when spawned
 void ADungeonManager::BeginPlay()
 {
 	Super::BeginPlay();
-
-	CreateDungeon();
+	
+	//CreateDungeon();
 }
 
 // Called every frame
@@ -53,20 +51,19 @@ void ADungeonManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(bRegenerateDungeon)
+	if (bRegenerateDungeon)
 	{
 		bRegenerateDungeon = false;
 
 		CreateDungeon();
 	}
 
-	if(bClearDungeon)
+	if (bClearDungeon)
 	{
 		bClearDungeon = false;
 
 		ClearDungeon();
 	}
-
 }
 
 //Generates the dungeon
@@ -74,13 +71,13 @@ void ADungeonManager::GenerateDungeon()
 {
 	Grid = FGrid(GetWorld(), DungeonWidth, DungeonDepth, GridSize);
 	GenerateRooms();
-	
+
 	FDelaunayTriangulation Triangulation = ComputeDelaunayTriangulation();
 	TArray<FMyEdge> Tree = ConstructTree(Triangulation);
 	AStarHallwayGeneration(Tree);
-	
+
 	Grid.GenerateAllMeshSegments(RoomHeight);
-	if(PlayerStart)
+	if (PlayerStart)
 	{
 		PlacePlayer();
 	}
@@ -102,15 +99,15 @@ void ADungeonManager::CreateDungeon()
 //use perlin noise to randomly place rooms
 void ADungeonManager::GenerateRooms()
 {
-
-	for(int32 I = 0; I < DungeonWidth; I++)
+	for (int32 I = 0; I < DungeonWidth; I++)
 	{
-		for(int32 J = 0; J < DungeonDepth; J++)
+		for (int32 J = 0; J < DungeonDepth; J++)
 		{
-			float PerlinValue = FMath::PerlinNoise2D(FVector2D(I * PerlinRoughness + PerlinOffset, J * PerlinThreshold + PerlinOffset));
+			float PerlinValue = FMath::PerlinNoise2D(FVector2D(I * PerlinRoughness + PerlinOffset,
+			                                                   J * PerlinThreshold + PerlinOffset));
 
 			//only create a room if the value returned by the perlin noise function exceed a set value
-			if(PerlinValue >= PerlinThreshold)
+			if (PerlinValue >= PerlinThreshold)
 			{
 				Grid.AddRoom(FVector2D(I, J), RoomWidths[J * DungeonWidth + I], RoomDepths[J * DungeonWidth + I]);
 			}
@@ -121,16 +118,15 @@ void ADungeonManager::GenerateRooms()
 //create a triangular mesh using Delaunay Triangulation to connect the rooms
 FDelaunayTriangulation ADungeonManager::ComputeDelaunayTriangulation()
 {
-	
 	//create a list of vertices to pass to the triangulation function
 	TArray<FVector2D> Vertices;
-	for(FRoom* Room : Grid.GetRooms())
+	for (FRoom* Room : Grid.GetRooms())
 	{
 		Vertices.Add(Room->Position);
 	}
 	FDelaunayTriangulation Triangulation = FDelaunayTriangulation(Vertices);
-	
-	if(bDebugDelaunayTriangulation)
+
+	if (bDebugDelaunayTriangulation)
 	{
 		DebugDelaunayTriangulation(Triangulation);
 	}
@@ -140,11 +136,14 @@ FDelaunayTriangulation ADungeonManager::ComputeDelaunayTriangulation()
 //draw debug lines to debug the triangulation mesh
 void ADungeonManager::DebugDelaunayTriangulation(FDelaunayTriangulation Triangulation)
 {
-	for(FMyTriangle CurrentTriangle : Triangulation.Triangles)
+	for (FMyTriangle CurrentTriangle : Triangulation.Triangles)
 	{
-		DrawDebugLine(GetWorld(), FVector(CurrentTriangle.Vertex1, 0) * GridSize, FVector(CurrentTriangle.Vertex2, 0) * GridSize, FColor::Red, true, -1, 0, 50);
-		DrawDebugLine(GetWorld(), FVector(CurrentTriangle.Vertex2, 0) * GridSize, FVector(CurrentTriangle.Vertex3, 0) * GridSize, FColor::Red, true, -1, 0, 50);
-		DrawDebugLine(GetWorld(), FVector(CurrentTriangle.Vertex3, 0) * GridSize, FVector(CurrentTriangle.Vertex1, 0) * GridSize, FColor::Red, true, -1, 0, 50);
+		DrawDebugLine(GetWorld(), FVector(CurrentTriangle.Vertex1, 0) * GridSize,
+		              FVector(CurrentTriangle.Vertex2, 0) * GridSize, FColor::Red, true, -1, 0, 50);
+		DrawDebugLine(GetWorld(), FVector(CurrentTriangle.Vertex2, 0) * GridSize,
+		              FVector(CurrentTriangle.Vertex3, 0) * GridSize, FColor::Red, true, -1, 0, 50);
+		DrawDebugLine(GetWorld(), FVector(CurrentTriangle.Vertex3, 0) * GridSize,
+		              FVector(CurrentTriangle.Vertex1, 0) * GridSize, FColor::Red, true, -1, 0, 50);
 	}
 }
 
@@ -154,7 +153,7 @@ TArray<FMyEdge> ADungeonManager::ConstructTree(FDelaunayTriangulation Triangulat
 {
 	//get edges from triangles
 	TArray<FMyEdge> Edges;
-	for(FMyTriangle CurrentTriangle : Triangulation.Triangles)
+	for (FMyTriangle CurrentTriangle : Triangulation.Triangles)
 	{
 		Edges.Add(FMyEdge(CurrentTriangle.Vertex1, CurrentTriangle.Vertex2));
 		Edges.Add(FMyEdge(CurrentTriangle.Vertex2, CurrentTriangle.Vertex3));
@@ -162,39 +161,39 @@ TArray<FMyEdge> ADungeonManager::ConstructTree(FDelaunayTriangulation Triangulat
 	}
 
 	TArray<float> Weights;
-	for(FMyEdge Edge : Edges)
+	for (FMyEdge Edge : Edges)
 	{
 		Weights.Add(Edge.Distance());
 	}
 
 	FMinimumSpanningTree MinimumSpanningTree(Edges, Weights);
-	
+
 	TArray<FMyEdge> Tree = MinimumSpanningTree.ConstructTree();
 
 	//some rooms are not connect, remove them
-	for(int32 I = Grid.GetRooms().Num() - 1; I >= 0; I--)
+	for (int32 I = Grid.GetRooms().Num() - 1; I >= 0; I--)
 	{
 		bool bIsInTree = false;
-		for(FMyEdge Edge : Tree)
+		for (FMyEdge Edge : Tree)
 		{
-			if(Edge.HasVertex(Grid.GetRooms()[I]->Position))
+			if (Edge.HasVertex(Grid.GetRooms()[I]->Position))
 			{
 				bIsInTree = true;
 				break;
 			}
 		}
 
-		if(!bIsInTree)
+		if (!bIsInTree)
 		{
 			Grid.RemoveRoom(I);
 		}
 	}
 
-	if(bDebugTree)
+	if (bDebugTree)
 	{
 		DebugTree(Tree);
 	}
-	
+
 	return Tree;
 }
 
@@ -202,13 +201,13 @@ TArray<FMyEdge> ADungeonManager::ConstructTree(FDelaunayTriangulation Triangulat
 TArray<FVector2D> ADungeonManager::FindConnectedVertices(FVector2D Vertex, TArray<FMyEdge> Edges)
 {
 	TArray<FVector2D> ConnectedVertices;
-	for(FMyEdge CurrentEdge : Edges)
+	for (FMyEdge CurrentEdge : Edges)
 	{
-		if(CurrentEdge.Vertex1.Equals(Vertex))
+		if (CurrentEdge.Vertex1.Equals(Vertex))
 		{
 			ConnectedVertices.Add(CurrentEdge.Vertex2);
 		}
-		else if(CurrentEdge.Vertex2.Equals(Vertex))
+		else if (CurrentEdge.Vertex2.Equals(Vertex))
 		{
 			ConnectedVertices.Add(CurrentEdge.Vertex1);
 		}
@@ -219,25 +218,24 @@ TArray<FVector2D> ADungeonManager::FindConnectedVertices(FVector2D Vertex, TArra
 
 void ADungeonManager::GenerateRandomValues()
 {
-	if(PerlinOffset == TNumericLimits<float>::Max())
+	PerlinOffset = FMath::RandRange(-10000.0f, 10000.0f);
+
+	RoomWidths = TArray<int32>();
+	RoomWidths.SetNum((DungeonDepth - 1) * DungeonWidth + DungeonWidth);
+	RoomDepths = TArray<int32>();
+	RoomDepths.SetNum((DungeonDepth - 1) * DungeonWidth + DungeonWidth);
+
+	for (int32 I = 0; I < RoomWidths.Num(); I++)
 	{
-		PerlinOffset = FMath::RandRange(-10000.0f, 10000.0f);
-
-		RoomWidths = TArray<int32>();
-		RoomWidths.SetNum((DungeonDepth - 1) * DungeonWidth + DungeonWidth);
-		RoomDepths = TArray<int32>();
-		RoomDepths.SetNum((DungeonDepth - 1) * DungeonWidth + DungeonWidth);
-
-		for(int32 I = 0; I < RoomWidths.Num(); I++)
-		{
-			RoomWidths[I] = FMath::RandRange(MinRoomWidth, MaxRoomWidth);
-		}
-
-		for(int32 I = 0; I < RoomDepths.Num(); I++)
-		{
-			RoomDepths[I] = FMath::RandRange(MinRoomDepth, MaxRoomDepth);
-		}
+		RoomWidths[I] = FMath::RandRange(MinRoomWidth, MaxRoomWidth);
 	}
+
+	for (int32 I = 0; I < RoomDepths.Num(); I++)
+	{
+		RoomDepths[I] = FMath::RandRange(MinRoomDepth, MaxRoomDepth);
+	}
+
+	bRegenerateDungeon = true;
 }
 
 void ADungeonManager::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -250,9 +248,10 @@ void ADungeonManager::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 
 void ADungeonManager::DebugTree(TArray<FMyEdge> Tree)
 {
-	for(FMyEdge CurrentEdge : Tree)
+	for (FMyEdge CurrentEdge : Tree)
 	{
-		DrawDebugLine(GetWorld(), FVector(CurrentEdge.Vertex1, 0) * GridSize, FVector(CurrentEdge.Vertex2, 0) * GridSize, FColor::Blue, true, -1, 0, 50);
+		DrawDebugLine(GetWorld(), FVector(CurrentEdge.Vertex1, 0) * GridSize,
+		              FVector(CurrentEdge.Vertex2, 0) * GridSize, FColor::Blue, true, -1, 0, 50);
 	}
 }
 
@@ -261,23 +260,23 @@ void ADungeonManager::AStarHallwayGeneration(TArray<FMyEdge> Tree)
 {
 	TArray<FVector2D> AllVertices = Grid.GetEmptyPoints();
 
-	for(FMyEdge Edge: Tree)
+	for (FMyEdge Edge : Tree)
 	{
 		FRoom* Room1 = Grid.FindRoomAtPosition(Edge.Vertex1);
 		FRoom* Room2 = Grid.FindRoomAtPosition(Edge.Vertex2);
 
-		if(Room1 && Room2)
+		if (Room1 && Room2)
 		{
 			Edge.Vertex1 = Room1->GetClosestMeshSegmentPosition(Room2->Position);
 			Edge.Vertex2 = Room2->GetClosestMeshSegmentPosition(Room1->Position);
 		}
 	}
-	
+
 	TArray<EGridSegment> GridArray = Grid.GetGrid();
 
 	FPathfinding AStar(AllVertices, DungeonWidth, DungeonDepth);
 
-	for(FMyEdge Edge : Tree)
+	for (FMyEdge Edge : Tree)
 	{
 		TArray<FVector2D> Path = AStar.GeneratePath(Edge.Vertex1, Edge.Vertex2);
 		Grid.AddHallway(Path);
@@ -286,7 +285,8 @@ void ADungeonManager::AStarHallwayGeneration(TArray<FMyEdge> Tree)
 
 void ADungeonManager::PlacePlayer()
 {
-	FVector Position = FVector((Grid.GetRandomRoomPosition() + FVector2D(1, 1)) * GridSize, PlayerStart->GetActorLocation().Z);
+	FVector Position = FVector((Grid.GetRandomRoomPosition() + FVector2D(1, 1)) * GridSize,
+	                           PlayerStart->GetActorLocation().Z);
 	PlayerStart->SetActorLocation(Position);
 }
 
