@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "DelaunayTriangulation.h"
 #include "Grid.h"
-#include "HallwaySegment.h"
 #include "GameFramework/Actor.h"
 #include "DungeonManager.generated.h"
 
@@ -58,8 +57,6 @@ public:
 	int32 MinRoomDepth;
 	UPROPERTY(EditAnywhere)
 	int32 MaxRoomDepth;
-	
-	TArray<AHallwaySegment*> HallwaySegments;
 	
 	void CreateDungeon();
 	

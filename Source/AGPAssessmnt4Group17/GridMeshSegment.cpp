@@ -15,7 +15,7 @@ AGridMeshSegment::AGridMeshSegment()
 	SetRootComponent(MeshComponent);
 	MeshComponent->bCastShadowAsTwoSided = true;
 
-	Material = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Materials/RedMaterial"));
+	Material = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Materials/StoneBrickMaterial"));
 }
 
 // Called when the game starts or when spawned
