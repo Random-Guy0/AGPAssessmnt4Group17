@@ -6,6 +6,7 @@
 #include "DelaunayTriangulation.h"
 #include "Grid.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/PlayerStart.h"
 #include "DungeonManager.generated.h"
 
 UCLASS()
@@ -24,9 +25,6 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	UPROPERTY(EditAnywhere)
-	AActor* PlayerStart;
 	
 	UPROPERTY(EditAnywhere)
 	float PerlinThreshold;
@@ -57,6 +55,8 @@ public:
 	int32 MinRoomDepth;
 	UPROPERTY(EditAnywhere)
 	int32 MaxRoomDepth;
+
+	TArray<APlayerStart*> PlayerStartLocations;
 	
 	void CreateDungeon();
 
@@ -69,7 +69,7 @@ public:
 	TArray<FMyEdge> ConstructTree(FDelaunayTriangulation Triangulation);
 	void AStarHallwayGeneration(TArray<FMyEdge> Tree);
 
-	void PlacePlayer();
+	void PlacePlayers();
 	
 	void GenerateDungeon();
 
