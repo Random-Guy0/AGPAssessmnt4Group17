@@ -4,16 +4,18 @@
 #include "GridMeshSegment.h"
 
 #include "KismetProceduralMeshLibrary.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AGridMeshSegment::AGridMeshSegment()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	bReplicates = true;
 
-	MeshComponent = CreateDefaultSubobject<UProceduralMeshComponent>("Mesh Component");
-	SetRootComponent(MeshComponent);
+	MeshComponent = CreateDefaultSubobject<UProceduralMeshComponent>("Mesh Component");;
 	MeshComponent->bCastShadowAsTwoSided = true;
+	SetRootComponent(MeshComponent);
 
 	Material = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Materials/StoneBrickMaterial"));
 }
@@ -22,7 +24,8 @@ AGridMeshSegment::AGridMeshSegment()
 void AGridMeshSegment::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	GenerateMesh();
 }
 
 // Called every frame
@@ -37,7 +40,18 @@ void AGridMeshSegment::SetPosition(FVector2D PositionArg)
 	Position = PositionArg;
 }
 
-void AGridMeshSegment::GenerateMesh(float GridSize, float RoomHeight, bool bGenLeftWall, bool bGenRightWall, bool bGenTopWall, bool bGenBottomWall)
+void AGridMeshSegment::SetMeshDetails(float GridSizeArg, float RoomHeightArg, bool bGenLeftWallArg,
+	bool bGenRightWallArg, bool bGenTopWallArg, bool bGenBottomWallArg)
+{
+	GridSize = GridSizeArg;
+	RoomHeight = RoomHeightArg;
+	bGenLeftWall = bGenLeftWallArg;
+	bGenRightWall = bGenRightWallArg;
+	bGenTopWall = bGenTopWallArg;
+	bGenBottomWall = bGenBottomWallArg;
+}
+
+void AGridMeshSegment::GenerateMesh()
 {
 	TArray<FVector> VerticesFloor = {
 		FVector(0, 0, 0),
@@ -183,6 +197,17 @@ void AGridMeshSegment::GenerateMesh(float GridSize, float RoomHeight, bool bGenL
 
 		MeshComponent->SetMaterial(5, Material);
 	}
+}
+
+void AGridMeshSegment::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AGridMeshSegment, GridSize);
+	DOREPLIFETIME(AGridMeshSegment, RoomHeight);
+	DOREPLIFETIME(AGridMeshSegment, bGenLeftWall);
+	DOREPLIFETIME(AGridMeshSegment, bGenRightWall);
+	DOREPLIFETIME(AGridMeshSegment, bGenTopWall);
+	DOREPLIFETIME(AGridMeshSegment, bGenBottomWall);
 }
 
 

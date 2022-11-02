@@ -10,4 +10,9 @@ void AMultiplayerGameMode::InitGame(const FString& MapName, const FString& Optio
 	Super::InitGame(MapName, Options, ErrorMessages);
 
 	DungeonManager = GetWorld()->SpawnActor<ADungeonManager>();
+
+	if(DungeonManager)
+	{
+		DungeonManager->CreateDungeon();
+	}
 }

@@ -91,15 +91,10 @@ public:
 	virtual bool ShouldTickIfViewportsOnly() const override;
 
 private:
-	UPROPERTY(Replicated)
 	float PerlinOffset;
-
-	UPROPERTY(Replicated)
+	
 	TArray<int32> RoomWidths;
-	UPROPERTY(Replicated)
 	TArray<int32> RoomDepths;
 	
 	TArray<FVector2D> FindConnectedVertices(FVector2D Vertex, TArray<FMyEdge> Edges);
-	
-	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

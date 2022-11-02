@@ -30,8 +30,26 @@ public:
 	FVector2D Position;
 
 	void SetPosition(FVector2D PositionArg);
-	void GenerateMesh(float GridSize, float RoomHeight, bool bGenLeftWall, bool bGenRightWall, bool bGenTopWall, bool bGenBottomWall);
+
+	void SetMeshDetails(float GridSizeArg, float RoomHeightArg, bool bGenLeftWallArg, bool bGenRightWallArg, bool bGenTopWallArg, bool bGenBottomWallArg);
+	
+	void GenerateMesh();
 
 private:
+	UPROPERTY(Replicated)
+	float GridSize;
+	UPROPERTY(Replicated)
+	float RoomHeight;
+	UPROPERTY(Replicated)
+	bool bGenLeftWall;
+	UPROPERTY(Replicated)
+	bool bGenRightWall;
+	UPROPERTY(Replicated)
+	bool bGenTopWall;
+	UPROPERTY(Replicated)
+	bool bGenBottomWall;
+	
 	UMaterialInterface* Material;
+
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };
