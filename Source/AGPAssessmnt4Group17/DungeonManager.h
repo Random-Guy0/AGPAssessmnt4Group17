@@ -59,6 +59,8 @@ public:
 	int32 MaxRoomDepth;
 	
 	void CreateDungeon();
+
+	void GenerateRandomValues();
 	
 	void GenerateRooms();
 	void ClearDungeon();
@@ -99,7 +101,5 @@ private:
 	
 	TArray<FVector2D> FindConnectedVertices(FVector2D Vertex, TArray<FMyEdge> Edges);
 	
-	void GenerateRandomValues();
-
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };
