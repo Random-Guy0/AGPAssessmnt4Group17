@@ -7,14 +7,13 @@
 #include "DrawDebugHelpers.h"
 #include "MinimumSpanningTree.h"
 #include "Pathfinding.h"
-#include "Engine/StaticMeshActor.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
 ADungeonManager::ADungeonManager()
 {
-	bReplicates = true;
-	bAlwaysRelevant = true;
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
 
 	///Set default values
 	PerlinThreshold = 0.6f;
@@ -32,18 +31,12 @@ ADungeonManager::ADungeonManager()
 
 	MaxRoomDepth = 6;
 	MinRoomDepth = 3;
-
-	GenerateRandomValues();
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
 }
 
 // Called when the game starts or when spawned
 void ADungeonManager::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	//CreateDungeon();
 }
 
 // Called every frame
@@ -93,6 +86,8 @@ void ADungeonManager::CreateDungeon()
 {
 	ClearDungeon();
 
+	GenerateRandomValues();
+	
 	GenerateDungeon();
 }
 
@@ -234,16 +229,6 @@ void ADungeonManager::GenerateRandomValues()
 	{
 		RoomDepths[I] = FMath::RandRange(MinRoomDepth, MaxRoomDepth);
 	}
-
-	bRegenerateDungeon = true;
-}
-
-void ADungeonManager::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(ADungeonManager, PerlinOffset);
-	DOREPLIFETIME(ADungeonManager, RoomWidths);
-	DOREPLIFETIME(ADungeonManager, RoomDepths);
 }
 
 void ADungeonManager::DebugTree(TArray<FMyEdge> Tree)

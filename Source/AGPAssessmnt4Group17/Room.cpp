@@ -3,9 +3,11 @@
 
 #include "Room.h"
 
-FRoom::FRoom(FVector2D Position, TArray<AGridMeshSegment*> MeshSegments)
+FRoom::FRoom(FVector2D Position, int32 Width, int32 Depth, TArray<AGridMeshSegment*> MeshSegments)
 {
 	this->Position = Position;
+	this->Width = Width;
+	this->Depth = Depth;
 	this->MeshSegments = MeshSegments;
 }
 

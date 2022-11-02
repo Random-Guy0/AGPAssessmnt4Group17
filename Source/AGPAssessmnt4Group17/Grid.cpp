@@ -83,7 +83,7 @@ void FGrid::AddRoom(FVector2D Position, int32 RoomWidth, int32 RoomDepth)
 				}
 			}
 		}
-		Rooms.Add(new FRoom(Position, CurrentRoomSegments));
+		Rooms.Add(new FRoom(Position, RoomWidth, RoomDepth, CurrentRoomSegments));
 	}
 }
 
@@ -135,7 +135,8 @@ void FGrid::GenerateAllMeshSegments(float RoomHeight)
 				bGenLeftWall = Grid[IndexToCheck] == EGridSegment::Empty;
 			}
 			
-			MeshSegment->GenerateMesh(GridSize, RoomHeight, bGenLeftWall, bGenRightWall, bGenTopWall, bGenBottomWall);
+			MeshSegment->SetMeshDetails(GridSize, RoomHeight, bGenLeftWall, bGenRightWall, bGenTopWall, bGenBottomWall);
+			//MeshSegment->GenerateMesh();
 		}
 	}
 }
