@@ -5,6 +5,7 @@
 
 #include "DelaunayTriangulation.h"
 #include "DrawDebugHelpers.h"
+#include "EngineUtils.h"
 #include "MinimumSpanningTree.h"
 #include "Pathfinding.h"
 #include "Net/UnrealNetwork.h"
@@ -70,10 +71,7 @@ void ADungeonManager::GenerateDungeon()
 	AStarHallwayGeneration(Tree);
 
 	Grid.GenerateAllMeshSegments(RoomHeight);
-	if (PlayerStart)
-	{
-		PlacePlayer();
-	}
+	PlacePlayers();
 }
 
 void ADungeonManager::ClearDungeon()
@@ -268,11 +266,14 @@ void ADungeonManager::AStarHallwayGeneration(TArray<FMyEdge> Tree)
 	}
 }
 
-void ADungeonManager::PlacePlayer()
+void ADungeonManager::PlacePlayers()
 {
-	FVector Position = FVector((Grid.GetRandomRoomPosition() + FVector2D(1, 1)) * GridSize,
-	                           PlayerStart->GetActorLocation().Z);
-	PlayerStart->SetActorLocation(Position);
+	for(int32 I = 0; I < Grid.GetRooms().Num(); I++)
+	{
+		FVector Position = FVector((Grid.GetRooms()[I]->Position + FVector2D(1, 1)) * GridSize,
+								   50);
+		PlayerStartLocations.Add(GetWorld()->SpawnActor<APlayerStart>(Position, FRotator::ZeroRotator));
+	}
 }
 
 bool ADungeonManager::ShouldTickIfViewportsOnly() const

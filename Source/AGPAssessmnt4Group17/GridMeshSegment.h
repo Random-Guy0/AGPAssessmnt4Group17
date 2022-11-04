@@ -48,8 +48,12 @@ private:
 	bool bGenTopWall;
 	UPROPERTY(Replicated)
 	bool bGenBottomWall;
+
+	float TorchSpawnChance;
 	
 	UMaterialInterface* Material;
+
+	TSubclassOf<AActor> TorchBlueprint;
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

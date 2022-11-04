@@ -15,6 +15,9 @@ class AGPASSESSMNT4GROUP17_API AMultiplayerGameMode : public AGameMode
 {
 	GENERATED_BODY()
 
+public:
+	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+
 private:
 	ADungeonManager* DungeonManager;
 

@@ -18,6 +18,9 @@ AGridMeshSegment::AGridMeshSegment()
 	SetRootComponent(MeshComponent);
 
 	Material = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Materials/StoneBrickMaterial"));
+
+	TorchSpawnChance = 0.45;
+	TorchBlueprint = ConstructorHelpers::FClassFinder<AActor>(TEXT("/Game/Blueprints/TorchBlueprint")).Class;
 }
 
 // Called when the game starts or when spawned
@@ -32,7 +35,6 @@ void AGridMeshSegment::BeginPlay()
 void AGridMeshSegment::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AGridMeshSegment::SetPosition(FVector2D PositionArg)
@@ -124,6 +126,11 @@ void AGridMeshSegment::GenerateMesh()
 		MeshComponent->CreateMeshSection(2, VerticesLeft, TrianglesLeft, NormalsLeft, UVCoords, TArray<FColor>(), TangentsLeft, true);
 
 		MeshComponent->SetMaterial(2, Material);
+
+		float TorchChance = FMath::RandRange(0.0f, 1.0f);
+
+		if(TorchChance <= TorchSpawnChance && HasAuthority())
+			GetWorld()->SpawnActor<AActor>(TorchBlueprint, GetActorLocation() + FVector(GridSize / 2.0f, 20, RoomHeight / 2.0f), FRotator::ZeroRotator);
 	}
 
 	if(bGenRightWall)
@@ -148,6 +155,11 @@ void AGridMeshSegment::GenerateMesh()
 		MeshComponent->CreateMeshSection(3, VerticesRight, TrianglesRight, NormalsRight, UVCoords, TArray<FColor>(), TangentsRight, true);
 
 		MeshComponent->SetMaterial(3, Material);
+
+		float TorchChance = FMath::RandRange(0.0f, 1.0f);
+
+		if(TorchChance <= TorchSpawnChance && HasAuthority())
+			GetWorld()->SpawnActor<AActor>(TorchBlueprint, GetActorLocation() + FVector(GridSize / 2.0f, GridSize - 20, RoomHeight / 2.0f), FRotator(0, 180, 0));
 	}
 
 	if(bGenTopWall)
@@ -172,6 +184,11 @@ void AGridMeshSegment::GenerateMesh()
 		MeshComponent->CreateMeshSection(4, VerticesTop, TrianglesTop, NormalsTop, UVCoords, TArray<FColor>(), TangentsTop, true);
 
 		MeshComponent->SetMaterial(4, Material);
+
+		float TorchChance = FMath::RandRange(0.0f, 1.0f);
+
+		if(TorchChance <= TorchSpawnChance && HasAuthority())
+			GetWorld()->SpawnActor<AActor>(TorchBlueprint, GetActorLocation() + FVector(GridSize - 20, GridSize / 2.0f, RoomHeight / 2.0f), FRotator(0, 90, 0));
 	}
 
 	if(bGenBottomWall)
@@ -196,6 +213,11 @@ void AGridMeshSegment::GenerateMesh()
 		MeshComponent->CreateMeshSection(5, VerticesBottom, TrianglesBottom, NormalsBottom, UVCoords, TArray<FColor>(), TangentsBottom, true);
 
 		MeshComponent->SetMaterial(5, Material);
+
+		float TorchChance = FMath::RandRange(0.0f, 1.0f);
+
+		if(TorchChance <= TorchSpawnChance && HasAuthority())
+			GetWorld()->SpawnActor<AActor>(TorchBlueprint, GetActorLocation() + FVector(20, GridSize / 2.0f, RoomHeight / 2.0f), FRotator(0, -90, 0));
 	}
 }
 
