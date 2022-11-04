@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DungeonManager.h"
+#include "DungeonGenerator/DungeonManager.h"
 #include "GameFramework/GameMode.h"
 #include "MultiplayerGameMode.generated.h"
 
