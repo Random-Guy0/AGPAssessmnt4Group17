@@ -20,7 +20,7 @@ AProceduralFloor::AProceduralFloor()
 void AProceduralFloor::BeginPlay()
 {
 	Super::BeginPlay();
-	int32 NumberObjects = FMath::RandRange(30, 75);
+	int32 NumberObjects = FMath::RandRange(50, 200);
 	for (int32 i = 0; i < NumberObjects; i++)
 	{
 		SpawnBush(BushClass);
