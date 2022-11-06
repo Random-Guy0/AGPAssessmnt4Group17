@@ -26,6 +26,7 @@ TArray<FMyEdge> FMinimumSpanningTree::ConstructTree()
 	return Tree;
 }
 
+//uses insertion sort to sort the edges (can be improved later)
 void FMinimumSpanningTree::SortEdges()
 {
 	for(int32 I = 1; I < Edges.Num(); I++)
@@ -46,6 +47,7 @@ void FMinimumSpanningTree::SortEdges()
 	}
 }
 
+//lazy, does not use union find
 bool FMinimumSpanningTree::DoesEdgeCreateLoop(FMyEdge Edge, TArray<FMyEdge> Tree)
 {
 	int32 Vertex1Count = 0;
@@ -64,5 +66,6 @@ bool FMinimumSpanningTree::DoesEdgeCreateLoop(FMyEdge Edge, TArray<FMyEdge> Tree
 		}
 	}
 
+	//"good enough"
 	return Vertex1Count > 4 || Vertex2Count > 4;
 }

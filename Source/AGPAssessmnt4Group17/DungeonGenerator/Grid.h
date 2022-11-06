@@ -29,8 +29,6 @@ public:
 	void GenerateAllMeshSegments(float RoomHeight);
 	void ClearAllMeshSegments();
 
-	FVector2D GetRandomRoomPosition();
-
 	TArray<FRoom*> GetRooms();
 	TArray<EGridSegment> GetGrid();
 

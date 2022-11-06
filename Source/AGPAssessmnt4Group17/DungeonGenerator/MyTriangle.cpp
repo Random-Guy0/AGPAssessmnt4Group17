@@ -29,6 +29,7 @@ bool FMyTriangle::HasVertex(FVector2D Vertex)
 	return Vertex.Equals(Vertex1) || Vertex.Equals(Vertex2) || Vertex.Equals(Vertex3);
 }
 
+//calculates circumcirlce using formula
 FMyTriangle::FCircumcircle::FCircumcircle(FVector2D Vertex1, FVector2D Vertex2, FVector2D Vertex3)
 {
 	float Length1 = FVector2D::Distance(Vertex1, Vertex2);

@@ -7,8 +7,10 @@
 /**
  * 
  */
+//holds a triangle used for Delaunay Triangulation
 class AGPASSESSMNT4GROUP17_API FMyTriangle
 {
+	//inteternal circumcircle class
 	class FCircumcircle
 	{
 		public:

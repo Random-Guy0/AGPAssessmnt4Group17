@@ -3,11 +3,13 @@
 
 #include "Grid.h"
 
+//default constructor
 FGrid::FGrid()
 {
 	FGrid(nullptr, 100, 100, 100.0f);
 }
 
+//initialise, setting all required values
 FGrid::FGrid(UWorld* World, int32 GridWidth, int32 GridDepth, float GridSize)
 {
 	this->World = World;
@@ -20,6 +22,7 @@ FGrid::FGrid(UWorld* World, int32 GridWidth, int32 GridDepth, float GridSize)
 	MeshSegments.SetNum((GridDepth - 1) * GridWidth + GridWidth);
 }
 
+//check if an area on the grid is empty
 bool FGrid::IsAreaEmpty(FVector2D StartPoint, int32 AreaWidth, int32 AreaDepth)
 {
 	if(StartPoint.X + AreaWidth > GridWidth || StartPoint.Y + AreaDepth > GridDepth)
@@ -49,6 +52,7 @@ bool FGrid::IsAreaEmpty(FVector2D StartPoint, int32 AreaWidth, int32 AreaDepth)
 	return bAreaEmpty;
 }
 
+//spawns a mesh segment
 AGridMeshSegment* FGrid::AddMeshSegment(FVector2D Position)
 {
 	if(World)
@@ -66,6 +70,7 @@ AGridMeshSegment* FGrid::AddMeshSegment(FVector2D Position)
 	}
 }
 
+//adds a new room to the grid
 void FGrid::AddRoom(FVector2D Position, int32 RoomWidth, int32 RoomDepth)
 {
 	if(IsAreaEmpty(Position, RoomWidth, RoomDepth))
@@ -87,6 +92,7 @@ void FGrid::AddRoom(FVector2D Position, int32 RoomWidth, int32 RoomDepth)
 	}
 }
 
+//adds a new hallway based of an array of points
 void FGrid::AddHallway(TArray<FVector2D> Positions)
 {
 	for(FVector2D Position : Positions)
@@ -100,6 +106,7 @@ void FGrid::AddHallway(TArray<FVector2D> Positions)
 	}
 }
 
+//generate the mesh for the dungeon
 void FGrid::GenerateAllMeshSegments(float RoomHeight)
 {
 	for(AGridMeshSegment* MeshSegment: MeshSegments)
@@ -141,6 +148,7 @@ void FGrid::GenerateAllMeshSegments(float RoomHeight)
 	}
 }
 
+//remove the mesh for the dungeon
 void FGrid::ClearAllMeshSegments()
 {
 	for(AGridMeshSegment* MeshSegment : MeshSegments)
@@ -163,23 +171,19 @@ void FGrid::ClearAllMeshSegments()
 	Rooms.Empty();
 }
 
-FVector2D FGrid::GetRandomRoomPosition()
-{
-	int32 RandomRoom = FMath::RandRange(0, Rooms.Num() - 1);
-	FVector2D Position = Rooms[RandomRoom]->Position;
-	return  Position;
-}
-
+//get an array of all the rooms
 TArray<FRoom*> FGrid::GetRooms()
 {
 	return Rooms;
 }
 
+//returns the grid itself
 TArray<EGridSegment> FGrid::GetGrid()
 {
 	return Grid;
 }
 
+//remove a room at the specified index
 void FGrid::RemoveRoom(int32 Index)
 {
 	FRoom* RoomToRemove = Rooms[Index];
@@ -198,6 +202,7 @@ void FGrid::RemoveRoom(int32 Index)
 	delete RoomToRemove;
 }
 
+//returns a list of all currently empty points
 TArray<FVector2D> FGrid::GetEmptyPoints()
 {
 	TArray<FVector2D> EmptyPoints;
@@ -221,6 +226,7 @@ TArray<FVector2D> FGrid::GetEmptyPoints()
 	return EmptyPoints;
 }
 
+//finds the room located at the specified position
 FRoom* FGrid::FindRoomAtPosition(FVector2D Position)
 {
 	FRoom* RoomToReturn = nullptr;

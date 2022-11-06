@@ -84,6 +84,7 @@ void AMultiplayerGameMode::TriggerRespawn(AController* Controller)
 	}
 }
 
+//custom spawning behaviour, randomly picks location
 AActor* AMultiplayerGameMode::ChoosePlayerStart_Implementation(AController* Player)
 {
 	if(Player->StartSpot.IsExplicitlyNull() && StartLocations.Num() > 0)
