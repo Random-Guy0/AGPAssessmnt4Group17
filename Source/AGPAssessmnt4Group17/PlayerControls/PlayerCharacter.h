@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "FirstPersonAnimInstance.h"
+#include "HealthComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
@@ -28,6 +29,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UHealthComponent* HealthComponent;
+
+	int32 KillCount;
+
 	void MoveForward(float Value);
 	void Strafe(float Value);
 	void LookUp(float Value);
@@ -35,6 +40,30 @@ public:
 
 	void SprintStart();
 	void SprintEnd();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BlueprintReload();
+	void Reload();
+
+	UFUNCTION(Server, Reliable)
+	void ServerSprintStart();
+	UFUNCTION(Server, Reliable)
+	void ServerSprintEnd();
+
+	void OnDeath();
+
+	UFUNCTION(Client, Reliable)
+	void SetPlayerHUDVisibility(bool bHUDVisible);
+	
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void ResetModelVisibility();
+
+	UFUNCTION(BlueprintCallable, Client, Reliable)
+	void UpdateKillCount();
+
+protected:
+	float SprintMovementSpeed;
+	float NormalMovementSpeed;
 
 private:
 	UPROPERTY(EditAnywhere)

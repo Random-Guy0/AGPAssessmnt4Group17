@@ -34,6 +34,8 @@ public:
 	void SetMeshDetails(float GridSizeArg, float RoomHeightArg, bool bGenLeftWallArg, bool bGenRightWallArg, bool bGenTopWallArg, bool bGenBottomWallArg);
 	
 	void GenerateMesh();
+	
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 private:
 	UPROPERTY(Replicated)
@@ -54,6 +56,4 @@ private:
 	UMaterialInterface* Material;
 
 	TSubclassOf<AActor> TorchBlueprint;
-
-	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

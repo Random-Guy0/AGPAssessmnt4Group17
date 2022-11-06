@@ -3,6 +3,11 @@
 
 #include "HealthComponent.h"
 
+#include "PlayerCharacter.h"
+#include "AGPAssessmnt4Group17/PlayerHUD.h"
+#include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
+
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
 {
@@ -22,6 +27,14 @@ void UHealthComponent::BeginPlay()
 
 	// ...
 	CurrentHealth = MaxHealth;
+
+	if (APawn* OwnerPawn = Cast<APawn>(GetOwner()))
+	{
+		if (GetOwner()->GetLocalRole() == ROLE_Authority && OwnerPawn->IsLocallyControlled())
+		{
+			UpdateHealthBar();
+		}
+	}
 }
 
 
@@ -33,7 +46,7 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	// ...
 }
 
-void UHealthComponent::OnTakeDamage(float Damage)
+float UHealthComponent::OnTakeDamage(float Damage)
 {
 	CurrentHealth -= Damage;
 
@@ -42,9 +55,41 @@ void UHealthComponent::OnTakeDamage(float Damage)
 		CurrentHealth = 0.0f;
 		OnDeath();
 	}
+	if (APawn* OwnerPawn = Cast<APawn>(GetOwner()))
+	{
+		if (GetOwner()->GetLocalRole() == ROLE_Authority && OwnerPawn->IsLocallyControlled())
+		{
+			UpdateHealthBar();
+		}
+	}
+
+	return CurrentHealth;
 }
 
 void UHealthComponent::OnDeath()
 {
+	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(GetOwner());
+	if (PlayerCharacter)
+	{
+		PlayerCharacter->OnDeath();
+	}
+}
+
+void UHealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UHealthComponent, CurrentHealth);
+}
+
+void UHealthComponent::UpdateHealthBar()
+{
+	if (GetOwner()->GetLocalRole() == ROLE_AutonomousProxy || (GetOwner()->GetLocalRole() == ROLE_Authority && Cast<APawn>(GetOwner())->IsLocallyControlled()))
+	{
+		APlayerHUD* PlayerHUD = Cast<APlayerHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
+		if (IsValid(PlayerHUD))
+		{
+			PlayerHUD->SetPlayerHealthBarPercent(CurrentHealth / MaxHealth);
+		}
+	}
 }
 

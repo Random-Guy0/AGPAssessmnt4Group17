@@ -20,8 +20,8 @@ ADungeonManager::ADungeonManager()
 	PerlinThreshold = 0.6f;
 	PerlinRoughness = 0.3f;
 
-	DungeonWidth = 75;
-	DungeonDepth = 75;
+	DungeonWidth = 50;
+	DungeonDepth = 50;
 
 	GridSize = 400.0f;
 
@@ -271,7 +271,7 @@ void ADungeonManager::PlacePlayers()
 	for(int32 I = 0; I < Grid.GetRooms().Num(); I++)
 	{
 		FVector Position = FVector((Grid.GetRooms()[I]->Position + FVector2D(1, 1)) * GridSize,
-								   50);
+								   90);
 		PlayerStartLocations.Add(GetWorld()->SpawnActor<APlayerStart>(Position, FRotator::ZeroRotator));
 	}
 }

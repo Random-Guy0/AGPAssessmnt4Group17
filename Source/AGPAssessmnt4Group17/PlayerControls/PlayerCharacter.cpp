@@ -2,6 +2,9 @@
 
 
 #include "PlayerCharacter.h"
+
+#include "AGPAssessmnt4Group17/MultiplayerGameMode.h"
+#include "AGPAssessmnt4Group17/PlayerHUD.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -14,7 +17,10 @@ APlayerCharacter::APlayerCharacter()
 	LookSensitivity = 1.0f;
 	SprintMultiplier = 1.5f;
 
-	AutoPossessPlayer = EAutoReceiveInput::Player0;
+	SprintMovementSpeed = GetCharacterMovement()->MaxWalkSpeed * SprintMultiplier;
+	NormalMovementSpeed = GetCharacterMovement()->MaxWalkSpeed;
+
+	KillCount = 0;
 }
 
 // Called when the game starts or when spawned
@@ -29,6 +35,13 @@ void APlayerCharacter::BeginPlay()
 	if (SkeletalMesh) // Make sure the skeletal mesh was found
 	{
 		AnimInstance = Cast<UFirstPersonAnimInstance>(SkeletalMesh->GetAnimInstance());
+	}
+
+	HealthComponent = FindComponentByClass<UHealthComponent>();
+
+	if (HealthComponent)
+	{
+		HealthComponent->SetIsReplicated(true);
 	}
 }
 
@@ -51,6 +64,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Pressed, this, &APlayerCharacter::SprintStart);
 	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Released, this, &APlayerCharacter::SprintEnd);
+
+	PlayerInputComponent->BindAction(TEXT("Reload"), IE_Pressed, this, &APlayerCharacter::Reload);
 }
 
 void APlayerCharacter::MoveForward(float Value)
@@ -71,8 +86,14 @@ void APlayerCharacter::LookUp(float Value)
 	FRotator LookUpRotation = FRotator::ZeroRotator;
 	LookUpRotation.Pitch = Value * LookSensitivity;
 
-	if (LookUpRotation.Pitch <= 90.0f && LookUpRotation.Pitch >= -90.0f)
+	if (Camera && abs(Camera->GetRelativeRotation().Pitch + LookUpRotation.Pitch < 90.0f))
+	{
 		Camera->AddRelativeRotation(LookUpRotation);
+		FRotator RelativeRotation = Camera->GetRelativeRotation();
+		RelativeRotation.Yaw = 0.0f;
+		RelativeRotation.Roll = 0.0f;
+		Camera->SetRelativeRotation(RelativeRotation);
+	}
 }
 
 void APlayerCharacter::Turn(float Value)
@@ -82,10 +103,10 @@ void APlayerCharacter::Turn(float Value)
 
 void APlayerCharacter::SprintStart()
 {
-	UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
-	MovementComponent->MaxWalkSpeed *= SprintMultiplier;
+	GetCharacterMovement()->MaxWalkSpeed = SprintMovementSpeed;
+	ServerSprintStart();
 
-	if(AnimInstance)
+	if (AnimInstance)
 	{
 		AnimInstance->bIsSprinting = true;
 	}
@@ -93,11 +114,66 @@ void APlayerCharacter::SprintStart()
 
 void APlayerCharacter::SprintEnd()
 {
-	UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
-	MovementComponent->MaxWalkSpeed /= SprintMultiplier;
+	GetCharacterMovement()->MaxWalkSpeed = NormalMovementSpeed;
+	ServerSprintEnd();
 
-	if(AnimInstance)
+	if (AnimInstance)
 	{
 		AnimInstance->bIsSprinting = false;
 	}
+}
+
+void APlayerCharacter::Reload()
+{
+	BlueprintReload();
+}
+
+void APlayerCharacter::OnDeath()
+{
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		AMultiplayerGameMode* MultiplayerGameMode = Cast<AMultiplayerGameMode>(GetWorld()->GetAuthGameMode());
+		if (MultiplayerGameMode)
+		{
+			MultiplayerGameMode->Respawn(GetController());
+		}
+	}
+}
+
+void APlayerCharacter::UpdateKillCount_Implementation()
+{
+	++KillCount;
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	{
+		APlayerHUD* PlayerHUD = Cast<APlayerHUD>(PlayerController->GetHUD());
+		if (PlayerHUD)
+		{
+			PlayerHUD->SetKillCountText(KillCount);
+		}
+	}
+}
+
+void APlayerCharacter::SetPlayerHUDVisibility_Implementation(bool bHUDVisible)
+{
+	if (GetLocalRole() == ROLE_AutonomousProxy)
+	{
+		if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+		{
+			APlayerHUD* PlayerHUD = Cast<APlayerHUD>(PlayerController->GetHUD());
+			if (PlayerHUD)
+			{
+				bHUDVisible ? PlayerHUD->ShowHUD() : PlayerHUD->HideHUD();
+			}
+		}
+	}
+}
+
+void APlayerCharacter::ServerSprintStart_Implementation()
+{
+	GetCharacterMovement()->MaxWalkSpeed = SprintMovementSpeed;
+}
+
+void APlayerCharacter::ServerSprintEnd_Implementation()
+{
+	GetCharacterMovement()->MaxWalkSpeed = NormalMovementSpeed;
 }
