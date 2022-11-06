@@ -4,14 +4,101 @@
 #include "MultiplayerGameMode.h"
 
 #include "EngineUtils.h"
+#include "PlayerHUD.h"
+#include "PlayerControls/PlayerCharacter.h"
+
+void AMultiplayerGameMode::Respawn(AController* PlayerToRespawn)
+{
+	if(PlayerToRespawn)
+	{
+		//Hide the hud
+		APlayerController* PlayerController = Cast<APlayerController>(PlayerToRespawn);
+		if (PlayerController)
+		{
+			APlayerCharacter* Character = Cast<APlayerCharacter>(PlayerController->GetPawn());
+			if (Character && !Character->IsLocallyControlled())
+			{
+				Character->SetPlayerHUDVisibility(false);
+			} 
+			else if (Character && Character->IsLocallyControlled())
+			{
+				APlayerHUD* PlayerHUD = Cast<APlayerHUD>(PlayerController->GetHUD());
+				if (PlayerHUD)
+				{
+					PlayerHUD->HideHUD();
+				}
+			}
+		}
+
+		//Remove the player
+		APawn* Pawn = PlayerToRespawn->GetPawn();
+		if (Pawn)
+		{
+			Pawn->SetLifeSpan(0.1f);
+		}
+
+		//Trigger the respawn process
+
+		FTimerHandle RespawnTimer;
+		FTimerDelegate RespawnDelegate;
+		RespawnDelegate.BindUFunction(this, TEXT("TriggerRespawn"), PlayerToRespawn);
+		GetWorldTimerManager().SetTimer(RespawnTimer, RespawnDelegate, 5.0f, false);
+	}
+}
+
+void AMultiplayerGameMode::TriggerRespawn(AController* Controller)
+{
+	if (Controller)
+	{
+		AActor* SpawnPoint = ChoosePlayerStart(Controller);
+		if (SpawnPoint)
+		{
+			APawn* SpawnedPlayer = GetWorld()->SpawnActor<APawn>(DefaultPawnClass, SpawnPoint->GetActorLocation(), SpawnPoint->GetActorRotation());
+			if (SpawnedPlayer)
+			{
+				Controller->Possess(SpawnedPlayer);
+			}
+		}
+	}
+
+	//Show the hud
+	APlayerController* PlayerController = Cast<APlayerController>(Controller);
+	if (PlayerController)
+	{
+		APlayerCharacter* Character = Cast<APlayerCharacter>(PlayerController->GetPawn());
+		if (Character && !Character->IsLocallyControlled())
+		{
+			Character->SetPlayerHUDVisibility(true);
+		}
+		else if (Character && Character->IsLocallyControlled())
+		{
+			APlayerHUD* PlayerHUD = Cast<APlayerHUD>(PlayerController->GetHUD());
+			if (PlayerHUD)
+			{
+				PlayerHUD->ShowHUD();
+				PlayerHUD->SetPlayerHealthBarPercent(1.0f);
+			}
+			
+			Character->ResetModelVisibility();
+		}
+	}
+}
 
 AActor* AMultiplayerGameMode::ChoosePlayerStart_Implementation(AController* Player)
 {
-	if(DungeonManager)
+	if(Player->StartSpot.IsExplicitlyNull() && DungeonManager && DungeonManager->PlayerStartLocations.Num() > 0)
+	{
+		int32 RandomStart = FMath::RandRange(0, StartLocations.Num() - 1);
+
+		APlayerStart* StartLocation = StartLocations[RandomStart];
+		StartLocations.RemoveAt(RandomStart);
+		return StartLocation;
+	}
+	else if(!Player->StartSpot.IsExplicitlyNull())
 	{
 		int32 RandomStart = FMath::RandRange(0, DungeonManager->PlayerStartLocations.Num() - 1);
+
 		APlayerStart* StartLocation = DungeonManager->PlayerStartLocations[RandomStart];
-		DungeonManager->PlayerStartLocations.RemoveAt(RandomStart);
 		return StartLocation;
 	}
 	else
@@ -29,6 +116,7 @@ void AMultiplayerGameMode::InitGame(const FString& MapName, const FString& Optio
 	if(DungeonManager)
 	{
 		DungeonManager->CreateDungeon();
+		StartLocations = DungeonManager->PlayerStartLocations;
 	}
 
 	Floor = GetWorld()->SpawnActor<AProceduralFloor>(ProceduralFloorBlueprint);
