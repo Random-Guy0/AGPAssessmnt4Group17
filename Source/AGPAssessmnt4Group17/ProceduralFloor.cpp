@@ -20,7 +20,7 @@ AProceduralFloor::AProceduralFloor()
 void AProceduralFloor::BeginPlay()
 {
 	Super::BeginPlay();
-	int32 NumberObjects = FMath::RandRange(10, 50);
+	int32 NumberObjects = FMath::RandRange(30, 75);
 	for (int32 i = 0; i < NumberObjects; i++)
 	{
 		SpawnBush(BushClass);
@@ -40,6 +40,34 @@ void AProceduralFloor::BeginPlay()
 	for (int32 i = 0; i < NumberObjects; i++)
 	{
 		SpawnPillar(PillarClass);
+	}
+	for (int32 i = 0; i < NumberObjects; i++)
+	{
+		SpawnBarrel(BarrelClass);
+	}
+	for (int32 i = 0; i < NumberObjects; i++)
+	{
+		SpawnBoard(BoardClass);
+	}
+	for (int32 i = 0; i < NumberObjects; i++)
+	{
+		SpawnBox(BoxClass);
+	}
+	for (int32 i = 0; i < NumberObjects; i++)
+	{
+		SpawnCart(CartClass);
+	}
+	for (int32 i = 0; i < NumberObjects; i++)
+	{
+		SpawnHay(HayClass);
+	}
+	for (int32 i = 0; i < NumberObjects; i++)
+	{
+		SpawnLog(LogClass);
+	}
+	for (int32 i = 0; i < NumberObjects; i++)
+	{
+		SpawnTripleBarrel(TripleBarrelClass);
 	}
 }
 
@@ -122,4 +150,102 @@ void AProceduralFloor::SpawnPillar(UClass* PillarToSpawn)
 	FRotator Rotation(0.f, Yaw, 0.f); //getting a random rotation
 
 	GetWorld()->SpawnActor<AActor>(PillarToSpawn, Location, Rotation);
+}
+
+void AProceduralFloor::SpawnBarrel(UClass* BarrelToSpawn)
+{
+
+	float XCoordinate = FMath::FRandRange(100.f, FloorWidth - 100.f);
+	float YCoordinate = FMath::FRandRange(100.f, FloorDepth - 100.f);
+
+	float Yaw = FMath::FRandRange(0.f, 360.f); // gives random value for the rotation
+
+	FVector Location(XCoordinate, YCoordinate, 0.f); //getting a random location
+	FRotator Rotation(0.f, Yaw, 0.f); //getting a random rotation
+
+	GetWorld()->SpawnActor<AActor>(BarrelToSpawn, Location, Rotation);
+}
+
+void AProceduralFloor::SpawnBoard(UClass* BoardToSpawn)
+{
+
+	float XCoordinate = FMath::FRandRange(100.f, FloorWidth - 100.f);
+	float YCoordinate = FMath::FRandRange(100.f, FloorDepth - 100.f);
+
+	float Yaw = FMath::FRandRange(0.f, 360.f); // gives random value for the rotation
+
+	FVector Location(XCoordinate, YCoordinate, 0.f); //getting a random location
+	FRotator Rotation(0.f, Yaw, 0.f); //getting a random rotation
+
+	GetWorld()->SpawnActor<AActor>(BoardToSpawn, Location, Rotation);
+}
+
+void AProceduralFloor::SpawnBox(UClass* BoxToSpawn)
+{
+
+	float XCoordinate = FMath::FRandRange(100.f, FloorWidth - 100.f);
+	float YCoordinate = FMath::FRandRange(100.f, FloorDepth - 100.f);
+
+	float Yaw = FMath::FRandRange(0.f, 360.f); // gives random value for the rotation
+
+	FVector Location(XCoordinate, YCoordinate, 0.f); //getting a random location
+	FRotator Rotation(0.f, Yaw, 0.f); //getting a random rotation
+
+	GetWorld()->SpawnActor<AActor>(BoxToSpawn, Location, Rotation);
+}
+
+void AProceduralFloor::SpawnCart(UClass* CartToSpawn)
+{
+
+	float XCoordinate = FMath::FRandRange(100.f, FloorWidth - 100.f);
+	float YCoordinate = FMath::FRandRange(100.f, FloorDepth - 100.f);
+
+	float Yaw = FMath::FRandRange(0.f, 360.f); // gives random value for the rotation
+
+	FVector Location(XCoordinate, YCoordinate, 0.f); //getting a random location
+	FRotator Rotation(0.f, Yaw, 0.f); //getting a random rotation
+
+	GetWorld()->SpawnActor<AActor>(CartToSpawn, Location, Rotation);
+}
+
+void AProceduralFloor::SpawnHay(UClass* HayToSpawn)
+{
+
+	float XCoordinate = FMath::FRandRange(100.f, FloorWidth - 100.f);
+	float YCoordinate = FMath::FRandRange(100.f, FloorDepth - 100.f);
+
+	float Yaw = FMath::FRandRange(0.f, 360.f); // gives random value for the rotation
+
+	FVector Location(XCoordinate, YCoordinate, 0.f); //getting a random location
+	FRotator Rotation(0.f, Yaw, 0.f); //getting a random rotation
+
+	GetWorld()->SpawnActor<AActor>(HayToSpawn, Location, Rotation);
+}
+
+void AProceduralFloor::SpawnLog(UClass* LogToSpawn)
+{
+
+	float XCoordinate = FMath::FRandRange(100.f, FloorWidth - 100.f);
+	float YCoordinate = FMath::FRandRange(100.f, FloorDepth - 100.f);
+
+	float Yaw = FMath::FRandRange(0.f, 360.f); // gives random value for the rotation
+
+	FVector Location(XCoordinate, YCoordinate, 0.f); //getting a random location
+	FRotator Rotation(0.f, Yaw, 0.f); //getting a random rotation
+
+	GetWorld()->SpawnActor<AActor>(LogToSpawn, Location, Rotation);
+}
+
+void AProceduralFloor::SpawnTripleBarrel(UClass* TripleBarrelToSpawn)
+{
+
+	float XCoordinate = FMath::FRandRange(100.f, FloorWidth - 100.f);
+	float YCoordinate = FMath::FRandRange(100.f, FloorDepth - 100.f);
+
+	float Yaw = FMath::FRandRange(0.f, 360.f); // gives random value for the rotation
+
+	FVector Location(XCoordinate, YCoordinate, 0.f); //getting a random location
+	FRotator Rotation(0.f, Yaw, 0.f); //getting a random rotation
+
+	GetWorld()->SpawnActor<AActor>(TripleBarrelToSpawn, Location, Rotation);
 }

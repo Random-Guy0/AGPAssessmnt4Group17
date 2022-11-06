@@ -47,11 +47,32 @@ private:
 		TSubclassOf<AActor> StatueClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> PillarClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
+		TSubclassOf<AActor> BarrelClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
+		TSubclassOf<AActor> BoardClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
+		TSubclassOf<AActor> BoxClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
+		TSubclassOf<AActor> CartClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
+		TSubclassOf<AActor> HayClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
+		TSubclassOf<AActor> LogClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
+		TSubclassOf<AActor> TripleBarrelClass;
 
 	void SpawnBush(UClass* BushToSpawn); //since BushClass references a BP it works with UClass
 	void SpawnRock(UClass* RockToSpawn);
 	void SpawnCoffin(UClass* CoffinToSpawn);
 	void SpawnStatue(UClass* StatueToSpawn);
 	void SpawnPillar(UClass* PillarToSpawn);
+	void SpawnBarrel(UClass* BarrelToSpawn);
+	void SpawnBoard(UClass* BoardToSpawn);
+	void SpawnBox(UClass* BoxToSpawn);
+	void SpawnCart(UClass* CartToSpawn);
+	void SpawnHay(UClass* HayToSpawn);
+	void SpawnLog(UClass* LogToSpawn);
+	void SpawnTripleBarrel(UClass* TripleBarrelToSpawn);
 
 };
