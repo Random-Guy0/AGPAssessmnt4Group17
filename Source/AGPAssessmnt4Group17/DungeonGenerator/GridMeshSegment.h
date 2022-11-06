@@ -59,7 +59,4 @@ private:
 
 	
 	TSubclassOf<AActor> CoffinBlueprint;
-
-	
-	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

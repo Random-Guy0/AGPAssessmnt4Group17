@@ -86,7 +86,7 @@ void AMultiplayerGameMode::TriggerRespawn(AController* Controller)
 
 AActor* AMultiplayerGameMode::ChoosePlayerStart_Implementation(AController* Player)
 {
-	if(Player->StartSpot.IsExplicitlyNull() && DungeonManager && DungeonManager->PlayerStartLocations.Num() > 0)
+	if(Player->StartSpot.IsExplicitlyNull() && StartLocations.Num() > 0)
 	{
 		int32 RandomStart = FMath::RandRange(0, StartLocations.Num() - 1);
 
