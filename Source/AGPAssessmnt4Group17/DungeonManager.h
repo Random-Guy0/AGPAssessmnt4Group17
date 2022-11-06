@@ -41,6 +41,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	float GridSize;
 
+	UPROPERTY(EditAnywhere)
+	float Floor;
+
 	FGrid Grid;
 
 	UPROPERTY(EditAnywhere)

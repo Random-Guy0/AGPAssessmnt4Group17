@@ -21,6 +21,9 @@ AGridMeshSegment::AGridMeshSegment()
 
 	TorchSpawnChance = 0.45;
 	TorchBlueprint = ConstructorHelpers::FClassFinder<AActor>(TEXT("/Game/Blueprints/TorchBlueprint")).Class;
+
+	//CoffinSpawnChance = 0.45;
+	CoffinBlueprint = ConstructorHelpers::FClassFinder<AActor>(TEXT("/Game/Blueprints/CoffinBlueprint")).Class;
 }
 
 // Called when the game starts or when spawned
@@ -56,7 +59,7 @@ void AGridMeshSegment::SetMeshDetails(float GridSizeArg, float RoomHeightArg, bo
 void AGridMeshSegment::GenerateMesh()
 {
 	TArray<FVector> VerticesFloor = {
-		FVector(0, 0, 0),
+		FVector(0, 0, 0), //FVector(x,y,z)
 		FVector(0, GridSize, 0),
 		FVector(GridSize, GridSize, 0),
 		FVector(GridSize, 0, 0 )
@@ -82,6 +85,7 @@ void AGridMeshSegment::GenerateMesh()
 	MeshComponent->CreateMeshSection(0, VerticesFloor, TrianglesFloor, NormalsFloor, UVCoords, TArray<FColor>(), TangentsFloor, true);
 
 	MeshComponent->SetMaterial(0, Material);
+
 
 	TArray<FVector> VerticesRoof = {
 		FVector(0, 0, RoomHeight),
@@ -219,7 +223,11 @@ void AGridMeshSegment::GenerateMesh()
 		if(TorchChance <= TorchSpawnChance && HasAuthority())
 			GetWorld()->SpawnActor<AActor>(TorchBlueprint, GetActorLocation() + FVector(20, GridSize / 2.0f, RoomHeight / 2.0f), FRotator(0, -90, 0));
 	}
+
+	
 }
+
+
 
 void AGridMeshSegment::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {

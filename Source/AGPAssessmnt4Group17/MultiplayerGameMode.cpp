@@ -30,4 +30,10 @@ void AMultiplayerGameMode::InitGame(const FString& MapName, const FString& Optio
 	{
 		DungeonManager->CreateDungeon();
 	}
+
+	Floor = GetWorld()->SpawnActor<AProceduralFloor>(ProceduralFloorBlueprint);
+	Floor->SetSizeFloor(DungeonManager->DungeonWidth * DungeonManager->GridSize, DungeonManager->DungeonDepth * DungeonManager->GridSize);
+	
+
+
 }

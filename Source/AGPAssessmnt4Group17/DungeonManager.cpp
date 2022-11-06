@@ -32,6 +32,8 @@ ADungeonManager::ADungeonManager()
 
 	MaxRoomDepth = 6;
 	MinRoomDepth = 3;
+
+	
 }
 
 // Called when the game starts or when spawned

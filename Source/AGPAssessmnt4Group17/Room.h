@@ -24,5 +24,7 @@ public:
 
 private:
 	TArray<AGridMeshSegment*> MeshSegments;
+
+	
 	
 };

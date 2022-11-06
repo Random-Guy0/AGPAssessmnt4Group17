@@ -55,5 +55,9 @@ private:
 
 	TSubclassOf<AActor> TorchBlueprint;
 
+	
+	TSubclassOf<AActor> CoffinBlueprint;
+
+	
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

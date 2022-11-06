@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "DungeonManager.h"
 #include "GameFramework/GameMode.h"
+#include "ProceduralFloor.h"
 #include "MultiplayerGameMode.generated.h"
 
 /**
@@ -22,4 +23,11 @@ private:
 	ADungeonManager* DungeonManager;
 
 	void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessages) override; 
+	
+	AProceduralFloor* Floor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<AProceduralFloor> ProceduralFloorBlueprint;
+	
+
 };
