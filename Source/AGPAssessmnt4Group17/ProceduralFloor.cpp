@@ -112,6 +112,8 @@ void AProceduralFloor::SpawnRock(UClass* RockToSpawn)
 	GetWorld()->SpawnActor<AActor>(RockToSpawn, Location, Rotation);
 }
 
+
+
 void AProceduralFloor::SpawnCoffin(UClass* CoffinToSpawn)
 {
 
