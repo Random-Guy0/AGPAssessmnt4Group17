@@ -29,6 +29,11 @@ public:
 
 	void SetKillCountText(int32 KillCount);
 
+	void SetCountdownText(float TimeRemaining);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ShowEndScreen();
+
 protected:
 	virtual void BeginPlay() override;
 	
@@ -42,4 +47,6 @@ private:
 	UTextBlock* RoundsRemainingText;
 
 	UTextBlock* KillCountText;
+
+	UTextBlock* CountdownText;
 };

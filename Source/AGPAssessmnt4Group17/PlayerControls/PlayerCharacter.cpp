@@ -4,6 +4,7 @@
 #include "PlayerCharacter.h"
 
 #include "AGPAssessmnt4Group17/MultiplayerGameMode.h"
+#include "AGPAssessmnt4Group17/MultiplayerGameState.h"
 #include "AGPAssessmnt4Group17/PlayerHUD.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -49,6 +50,27 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	AMultiplayerGameState* GameState = GetWorld()->GetGameState<AMultiplayerGameState>();
+	if(GetLocalRole() == ROLE_AutonomousProxy && GameState)
+	{
+		if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+		{
+			APlayerHUD* PlayerHUD = Cast<APlayerHUD>(PlayerController->GetHUD());
+			if (PlayerHUD)
+			{
+				float TimeRemaining = GameState->GetTimeRemaining();
+
+				if(TimeRemaining <= 0)
+				{
+					TimeRemaining = 0;
+					PlayerHUD->ShowEndScreen();
+				}
+				
+				PlayerHUD->SetCountdownText(TimeRemaining);
+			}
+		}
+	}
 }
 
 // Called to bind functionality to input

@@ -3,34 +3,38 @@
 
 #include "PlayerHUD.h"
 
+#include "MultiplayerGameState.h"
 #include "Components/TextBlock.h"
 #include "UObject/ConstructorHelpers.h"
 
 APlayerHUD::APlayerHUD()
 {
-	static ConstructorHelpers::FClassFinder<UUserWidget> PlayerHUDObject (TEXT("/Game/Widgets/PlayerHUDWidget"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> PlayerHUDObject(TEXT("/Game/Widgets/PlayerHUDWidget"));
 	PlayerHUDClass = PlayerHUDObject.Class;
 
-	if(PlayerHUDClass)
+	if (PlayerHUDClass)
 	{
 		CurrentPlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), PlayerHUDClass);
 
-		if(CurrentPlayerHUDWidget)
+		if (CurrentPlayerHUDWidget)
 		{
 			CurrentPlayerHUDWidget->AddToViewport();
 			HealthProgressBar = Cast<UProgressBar>(CurrentPlayerHUDWidget->GetWidgetFromName(TEXT("ProgHealthBar")));
 
 			RoundsRemainingText = Cast<UTextBlock>(CurrentPlayerHUDWidget->GetWidgetFromName(TEXT("RoundsRemaining")));
-			RoundsInMagazineText = Cast<UTextBlock>(CurrentPlayerHUDWidget->GetWidgetFromName(TEXT("RoundsInMagazine")));
-			
+			RoundsInMagazineText = Cast<
+				UTextBlock>(CurrentPlayerHUDWidget->GetWidgetFromName(TEXT("RoundsInMagazine")));
+
 			KillCountText = Cast<UTextBlock>(CurrentPlayerHUDWidget->GetWidgetFromName(TEXT("KillCountText")));
+
+			CountdownText = Cast<UTextBlock>(CurrentPlayerHUDWidget->GetWidgetFromName(TEXT("CountdownText")));
 		}
 	}
 }
 
 void APlayerHUD::SetPlayerHealthBarPercent(float Percent)
 {
-	if(HealthProgressBar)
+	if (HealthProgressBar)
 	{
 		HealthProgressBar->SetPercent(Percent);
 	}
@@ -63,9 +67,20 @@ void APlayerHUD::SetAmmoText(int32 RoundsRemaining, int32 RoundsInMagazine)
 
 void APlayerHUD::SetKillCountText(int32 KillCount)
 {
-	if(KillCountText)
+	if (KillCountText)
 	{
 		KillCountText->SetText(FText::FromString(FString::Printf(TEXT("%i kills"), KillCount)));
+	}
+}
+
+void APlayerHUD::SetCountdownText(float TimeRemaining)
+{
+	int32 Minutes = FMath::Floor(TimeRemaining / 60.0f);
+	int32 Seconds = FMath::Floor(TimeRemaining - (Minutes * 60));
+
+	if (CountdownText)
+	{
+		CountdownText->SetText(FText::FromString(FString::Printf(TEXT("%i:%i"), Minutes, Seconds)));
 	}
 }
 
