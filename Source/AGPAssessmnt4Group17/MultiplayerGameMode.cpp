@@ -93,9 +93,10 @@ AActor* AMultiplayerGameMode::ChoosePlayerStart_Implementation(AController* Play
 
 		APlayerStart* StartLocation = StartLocations[RandomStart];
 		StartLocations.RemoveAt(RandomStart);
+		
 		return StartLocation;
 	}
-	else if(!Player->StartSpot.IsExplicitlyNull())
+	else if(DungeonManager && DungeonManager->PlayerStartLocations.Num() > 0)
 	{
 		int32 RandomStart = FMath::RandRange(0, DungeonManager->PlayerStartLocations.Num() - 1);
 

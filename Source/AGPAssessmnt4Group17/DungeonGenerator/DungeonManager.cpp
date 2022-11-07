@@ -8,6 +8,7 @@
 #include "EngineUtils.h"
 #include "MinimumSpanningTree.h"
 #include "Pathfinding.h"
+#include "Components/CapsuleComponent.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -263,7 +264,8 @@ void ADungeonManager::PlacePlayers()
 	{
 		FVector Position = FVector((Grid.GetRooms()[I]->Position + FVector2D(1, 1)) * GridSize,
 		                           90);
-		PlayerStartLocations.Add(GetWorld()->SpawnActor<APlayerStart>(Position, FRotator::ZeroRotator));
+		APlayerStart* NewStart = GetWorld()->SpawnActor<APlayerStart>(Position, FRotator::ZeroRotator);
+		PlayerStartLocations.Add(NewStart);
 	}
 }
 
