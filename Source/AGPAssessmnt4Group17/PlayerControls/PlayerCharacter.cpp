@@ -64,7 +64,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 				if(TimeRemaining <= 0)
 				{
 					TimeRemaining = 0;
-					PlayerHUD->ShowEndScreen();
+					PlayerHUD->ShowEndScreen(KillCount);
 				}
 				
 				PlayerHUD->SetCountdownText(TimeRemaining);

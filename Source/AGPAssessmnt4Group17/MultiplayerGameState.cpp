@@ -8,7 +8,7 @@
 AMultiplayerGameState::AMultiplayerGameState()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	StartingGameTimeInSeconds = 300.0f;
+	StartingGameTimeInSeconds = 30.0f;
 }
 
 float AMultiplayerGameState::GetTimeRemaining()

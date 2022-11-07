@@ -10,7 +10,9 @@
 APlayerHUD::APlayerHUD()
 {
 	static ConstructorHelpers::FClassFinder<UUserWidget> PlayerHUDObject(TEXT("/Game/Widgets/PlayerHUDWidget"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> EndScreenObject(TEXT("/Game/Main_Menu/GameOver_Widget"));
 	PlayerHUDClass = PlayerHUDObject.Class;
+	EndScreenClass = EndScreenObject.Class;
 
 	if (PlayerHUDClass)
 	{
@@ -81,6 +83,26 @@ void APlayerHUD::SetCountdownText(float TimeRemaining)
 	if (CountdownText)
 	{
 		CountdownText->SetText(FText::FromString(FString::Printf(TEXT("%i:%i"), Minutes, Seconds)));
+	}
+}
+
+void APlayerHUD::ShowEndScreen(int32 KillCount)
+{
+	if(!EndScreenWidget && EndScreenClass)
+	{
+		EndScreenWidget = CreateWidget<UUserWidget>(GetWorld(), EndScreenClass);
+
+		if(EndScreenWidget)
+		{
+			EndScreenWidget->AddToViewport();
+			GetOwningPlayerController()->SetShowMouseCursor(true);
+
+			UTextBlock* FinalScoreText = Cast<UTextBlock>(EndScreenWidget->GetWidgetFromName(TEXT("FinalScoreText")));
+			if(FinalScoreText)
+			{
+				FinalScoreText->SetText(FText::FromString(FString::Printf(TEXT("Final Score: %i kills"), KillCount)));
+			}
+		}
 	}
 }
 

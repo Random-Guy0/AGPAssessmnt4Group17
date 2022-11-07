@@ -30,16 +30,17 @@ public:
 	void SetKillCountText(int32 KillCount);
 
 	void SetCountdownText(float TimeRemaining);
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void ShowEndScreen();
+	
+	void ShowEndScreen(int32 KillCount);
 
 protected:
 	virtual void BeginPlay() override;
 	
 private:
 	TSubclassOf<UUserWidget> PlayerHUDClass;
+	TSubclassOf<UUserWidget> EndScreenClass;
 	UUserWidget* CurrentPlayerHUDWidget;
+	UUserWidget* EndScreenWidget;
 
 	UProgressBar* HealthProgressBar;
 
