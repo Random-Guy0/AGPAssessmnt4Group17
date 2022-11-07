@@ -43,22 +43,31 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> CoffinClass;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> StatueClass;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> PillarClass;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> BarrelClass;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> BoardClass;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> BoxClass;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> CartClass;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> HayClass;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> LogClass;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> TripleBarrelClass;
 
