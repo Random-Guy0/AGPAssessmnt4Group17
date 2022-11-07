@@ -32,8 +32,6 @@ ADungeonManager::ADungeonManager()
 
 	MaxRoomDepth = 6;
 	MinRoomDepth = 3;
-
-	
 }
 
 // Called when the game starts or when spawned
@@ -90,7 +88,7 @@ void ADungeonManager::CreateDungeon()
 	ClearDungeon();
 
 	GenerateRandomValues();
-	
+
 	GenerateDungeon();
 }
 
@@ -107,7 +105,8 @@ void ADungeonManager::GenerateRooms()
 			//only create a room if the value returned by the perlin noise function exceed a set value
 			if (PerlinValue >= PerlinThreshold)
 			{
-				Grid.AddRoom(FVector2D(I, J), RoomWidths[J * DungeonWidth + I], RoomDepths[J * DungeonWidth + I]);
+				Grid.AddRoom(FVector2D(I, J), RoomWidths[J * DungeonWidth + I],
+					RoomDepths[J * DungeonWidth + I]);
 			}
 		}
 	}
@@ -246,8 +245,6 @@ void ADungeonManager::AStarHallwayGeneration(TArray<FMyEdge> Tree)
 		}
 	}
 
-	TArray<EGridSegment> GridArray = Grid.GetGrid();
-
 	//initialise pathfinding
 	FPathfinding AStar(AllVertices, DungeonWidth, DungeonDepth);
 
@@ -262,10 +259,10 @@ void ADungeonManager::AStarHallwayGeneration(TArray<FMyEdge> Tree)
 //generate a potential player spawn point in each room
 void ADungeonManager::PlacePlayers()
 {
-	for(int32 I = 0; I < Grid.GetRooms().Num(); I++)
+	for (int32 I = 0; I < Grid.GetRooms().Num(); I++)
 	{
 		FVector Position = FVector((Grid.GetRooms()[I]->Position + FVector2D(1, 1)) * GridSize,
-								   90);
+		                           90);
 		PlayerStartLocations.Add(GetWorld()->SpawnActor<APlayerStart>(Position, FRotator::ZeroRotator));
 	}
 }
