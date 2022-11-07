@@ -7,6 +7,7 @@
 /**
  * 
  */
+//basic class to hold info on an edge
 class AGPASSESSMNT4GROUP17_API FMyEdge
 {
 public:

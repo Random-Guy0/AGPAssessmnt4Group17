@@ -98,6 +98,4 @@ private:
 	
 	TArray<int32> RoomWidths;
 	TArray<int32> RoomDepths;
-	
-	TArray<FVector2D> FindConnectedVertices(FVector2D Vertex, TArray<FMyEdge> Edges);
 };

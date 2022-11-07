@@ -47,6 +47,7 @@ void ADungeonManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//intended for testing in the editor
 	if (bRegenerateDungeon)
 	{
 		bRegenerateDungeon = false;
@@ -76,12 +77,14 @@ void ADungeonManager::GenerateDungeon()
 	PlacePlayers();
 }
 
+//clears the dungeon, meant for testing in editor
 void ADungeonManager::ClearDungeon()
 {
 	FlushPersistentDebugLines(GetWorld());
 	Grid.ClearAllMeshSegments();
 }
 
+//generate the dungeon with a separate random values function
 void ADungeonManager::CreateDungeon()
 {
 	ClearDungeon();
@@ -155,6 +158,7 @@ TArray<FMyEdge> ADungeonManager::ConstructTree(FDelaunayTriangulation Triangulat
 		Edges.Add(FMyEdge(CurrentTriangle.Vertex3, CurrentTriangle.Vertex1));
 	}
 
+	//assign weights to the edges
 	TArray<float> Weights;
 	for (FMyEdge Edge : Edges)
 	{
@@ -192,29 +196,12 @@ TArray<FMyEdge> ADungeonManager::ConstructTree(FDelaunayTriangulation Triangulat
 	return Tree;
 }
 
-//find all vertices that an edge with the supplied vertex
-TArray<FVector2D> ADungeonManager::FindConnectedVertices(FVector2D Vertex, TArray<FMyEdge> Edges)
-{
-	TArray<FVector2D> ConnectedVertices;
-	for (FMyEdge CurrentEdge : Edges)
-	{
-		if (CurrentEdge.Vertex1.Equals(Vertex))
-		{
-			ConnectedVertices.Add(CurrentEdge.Vertex2);
-		}
-		else if (CurrentEdge.Vertex2.Equals(Vertex))
-		{
-			ConnectedVertices.Add(CurrentEdge.Vertex1);
-		}
-	}
-
-	return ConnectedVertices;
-}
-
+//generate the random values needed to generate the rooms
 void ADungeonManager::GenerateRandomValues()
 {
 	PerlinOffset = FMath::RandRange(-10000.0f, 10000.0f);
 
+	//the width and depth are generated for each point a room could potentially be created at
 	RoomWidths = TArray<int32>();
 	RoomWidths.SetNum((DungeonDepth - 1) * DungeonWidth + DungeonWidth);
 	RoomDepths = TArray<int32>();
@@ -231,6 +218,7 @@ void ADungeonManager::GenerateRandomValues()
 	}
 }
 
+//draw debug lines to debug the tree
 void ADungeonManager::DebugTree(TArray<FMyEdge> Tree)
 {
 	for (FMyEdge CurrentEdge : Tree)
@@ -245,6 +233,7 @@ void ADungeonManager::AStarHallwayGeneration(TArray<FMyEdge> Tree)
 {
 	TArray<FVector2D> AllVertices = Grid.GetEmptyPoints();
 
+	//move the points of the edge closer together
 	for (FMyEdge Edge : Tree)
 	{
 		FRoom* Room1 = Grid.FindRoomAtPosition(Edge.Vertex1);
@@ -259,8 +248,10 @@ void ADungeonManager::AStarHallwayGeneration(TArray<FMyEdge> Tree)
 
 	TArray<EGridSegment> GridArray = Grid.GetGrid();
 
+	//initialise pathfinding
 	FPathfinding AStar(AllVertices, DungeonWidth, DungeonDepth);
 
+	//pathfind each edge and add the resulting hallway to the grid
 	for (FMyEdge Edge : Tree)
 	{
 		TArray<FVector2D> Path = AStar.GeneratePath(Edge.Vertex1, Edge.Vertex2);
@@ -268,6 +259,7 @@ void ADungeonManager::AStarHallwayGeneration(TArray<FMyEdge> Tree)
 	}
 }
 
+//generate a potential player spawn point in each room
 void ADungeonManager::PlacePlayers()
 {
 	for(int32 I = 0; I < Grid.GetRooms().Num(); I++)

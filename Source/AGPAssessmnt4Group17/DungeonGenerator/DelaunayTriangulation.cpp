@@ -30,6 +30,7 @@ FMyTriangle FDelaunayTriangulation::GenerateSuperTriangle()
 	float DeltaX = (MaxX - MinX);
 	float DeltaY = (MaxY - MinY);
 
+	//this triangle will be big enough to include all vertices
 	FVector2D Vertex1 = FVector2D(MinX - DeltaX, MinY - DeltaY * 3);
 	FVector2D Vertex2 = FVector2D(MinX - DeltaX, MaxY + DeltaY);
 	FVector2D Vertex3 = FVector2D(MaxX + DeltaX * 3, MaxY + DeltaY);

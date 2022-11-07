@@ -56,6 +56,7 @@ void AGridMeshSegment::SetMeshDetails(float GridSizeArg, float RoomHeightArg, bo
 	bGenBottomWall = bGenBottomWallArg;
 }
 
+//create the mesh from given parameters
 void AGridMeshSegment::GenerateMesh()
 {
 	TArray<FVector> VerticesFloor = {

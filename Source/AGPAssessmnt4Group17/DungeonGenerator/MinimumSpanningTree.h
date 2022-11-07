@@ -8,6 +8,7 @@
 /**
  * 
  */
+//based on Kruskal's algorithm (but lazier)
 class AGPASSESSMNT4GROUP17_API FMinimumSpanningTree
 {
 public:
