@@ -31,43 +31,30 @@ private:
 
 	float FloorWidth;
 	float FloorDepth;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true")) // allows chacnges to be done in blueprint so longit is of the same class
 		USceneComponent* Floor;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> BushClass;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> RockClass;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> CoffinClass;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> StatueClass;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> PillarClass;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> BarrelClass;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> BoardClass;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> BoxClass;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> CartClass;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> HayClass;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> LogClass;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Floor, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AActor> TripleBarrelClass;
 
