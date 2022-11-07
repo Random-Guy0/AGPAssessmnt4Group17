@@ -20,8 +20,8 @@ AProceduralFloor::AProceduralFloor()
 void AProceduralFloor::BeginPlay()
 {
 	Super::BeginPlay();
-	int32 NumberObjects = FMath::RandRange(50, 100);
-	for (int32 i = 0; i < NumberObjects; i++)
+	int32 NumberObjects = FMath::RandRange(50, 100); //setting random value, each time this is called the number is different
+	for (int32 i = 0; i < NumberObjects; i++) //seperate for loops so that the number of objects is different 
 	{
 		SpawnBush(BushClass);
 	}
@@ -78,7 +78,7 @@ void AProceduralFloor::Tick(float DeltaTime)
 
 }
 
-void AProceduralFloor::SetSizeFloor(float Width, float Depth)
+void AProceduralFloor::SetSizeFloor(float Width, float Depth) //creating a 'floor' so the items can spawn on it
 {
 	FloorWidth = Width;
 	FloorDepth = Depth;
