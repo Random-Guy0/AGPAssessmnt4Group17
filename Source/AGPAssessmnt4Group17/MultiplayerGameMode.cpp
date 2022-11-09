@@ -81,6 +81,7 @@ void AMultiplayerGameMode::TriggerRespawn(AController* Controller)
 			
 			Character->ResetModelVisibility();
 		}
+		PlayerController->SetShowMouseCursor(false);
 	}
 }
 
